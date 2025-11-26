@@ -92,16 +92,22 @@ app.post('/api/movies', async (req, res) => {
   const newMovie = new movieModel({ title, year, poster }); 
   // Return saved movie
   await newMovie.save(); 
-  console.log("Movie Saved ", movieModel);
+  console.log("Movie Saved ", newMovie);
   res.status(201).json({ message: 'Movie created successfully', movie: newMovie });
 })
 
-app.delete('api/movies/:id', async (req,res) => {
+
+app.delete('/api/movie/:id', async (req,res) => {
+  // log the movie ID to track which movie is being deleted
   console.log('Deleting movie with id: ', req.params.id);
+    
+  // delete the movie by its ID 
   const movie = await movieModel.findByIdAndDelete(req.params.id)
   console.log('Movie deleted: ', movie);
+  
+  // send a response with a success message
   res.json({message: 'Movie deleted successfully', movie: movie});
-})
+});
 
 
 app.get('/api/movie/:id', async (req, res) => {
