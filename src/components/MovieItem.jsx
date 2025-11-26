@@ -1,7 +1,21 @@
 import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import axios from 'axios';
 
 const MovieItem = (props) => {
+
+    const handleDelete = (e) => {
+        e.preventDefault();
+        axios.delete('http://localhost:3000/api/movie/' + props.myMovies._id)
+            .then(() => {
+                props.Reload(); // Refresh the movie list after deletion
+            })
+            .catch((error) => {
+                console.error("Error deleting movie:", error);
+            });
+    };
+
     return (
         <div>
 
@@ -18,6 +32,7 @@ const MovieItem = (props) => {
                 {/* footer section displaying the year */}
                 <Card.Footer className="text-muted">{props.myMovies.year}</Card.Footer>
                 <Link className='btn btn-primary' to={"/edit/" + props.myMovies._id}>Edit</Link>
+                <Button variant='danger' onClick={handleDelete}>Delete</Button>
             </Card>
         </div>
     );

@@ -3,25 +3,30 @@ import Movies from "./Movies"; // import the Movies component
 import axios from 'axios';
 
 const Read = () => {
-const [myMovies, setMovie] = useState([]);
+    const [myMovies, setMovie] = useState([]);
 
-useEffect(
-    ()=>{
-        // do some http client work
+    const Reload = () => {
         axios.get('http://localhost:3000/api/movies')
-        .then((response)=>{
-            console.log(response.data.myArray);
-            setMovie(response.data.myArray);
-        })
-        .catch((error)=>{console.log(error)});
-    },[]
-);
+            .then((response) => {
+                console.log(response.data.myArray);
+                setMovie(response.data.myArray);
+            })
+            .catch((error) => { console.log(error) });
+    };
+
+    useEffect(
+        () => {
+           
+                Reload();
+           
+            }, []
+    );
 
     return (
         <div>
             <h1>Hello from Read component</h1>
             {/* pass the movie data as a prop to the Movies component */}
-            <Movies myMovies={myMovies} />
+            <Movies myMovies={myMovies} Reload={Reload}></Movies>
         </div>
     );
 }
