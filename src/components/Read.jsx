@@ -6,6 +6,7 @@ const Read = () => {
     const [myMovies, setMovie] = useState([]);
 
     const Reload = () => {
+        // fetches the updated list of movies from the API
         axios.get('http://localhost:3000/api/movies')
             .then((response) => {
                 console.log(response.data.myArray);
