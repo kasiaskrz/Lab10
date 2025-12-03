@@ -1,5 +1,11 @@
 // import express and initialize the app
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// Serve static files from Vite build
+app.use(express.static(path.join(__dirname, '../dist')))
 const app = express();
 const port = 3000;
 
@@ -80,8 +86,12 @@ app.get('/api/movies', async (req, res) => {
   // ]
 
   const movies = await movieModel.find({});
-  res.json({myArray: movies});
+  res.json({ myArray: movies });
 
+})
+
+app.get('/{*any}', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'))
 })
 
 // route for creating a new movie
@@ -89,39 +99,40 @@ app.post('/api/movies', async (req, res) => {
 
   const { title, year, poster } = req.body;
   // Create new movie document
-  const newMovie = new movieModel({ title, year, poster }); 
+  const newMovie = new movieModel({ title, year, poster });
   // Return saved movie
-  await newMovie.save(); 
+  await newMovie.save();
   console.log("Movie Saved ", newMovie);
   res.status(201).json({ message: 'Movie created successfully', movie: newMovie });
 })
 
 
-app.delete('/api/movie/:id', async (req,res) => {
+app.delete('/api/movie/:id', async (req, res) => {
   // log the movie ID to track which movie is being deleted
   console.log('Deleting movie with id: ', req.params.id);
-    
+
   // delete the movie by its ID 
   const movie = await movieModel.findByIdAndDelete(req.params.id)
   console.log('Movie deleted: ', movie);
-  
+
   // send a response with a success message
-  res.json({message: 'Movie deleted successfully', movie: movie});
+  res.json({ message: 'Movie deleted successfully', movie: movie });
 });
 
 
 app.get('/api/movie/:id', async (req, res) => {
-    let movie = await movieModel.findById({ _id: req.params.id });
-    res.send(movie);
+  let movie = await movieModel.findById({ _id: req.params.id });
+  res.send(movie);
 });
 
 app.put('/api/movie/:id', async (req, res) => {
   const { title, year, poster } = req.body;
-    const updatedMovie = await movieModel.findByIdAndUpdate(req.params.id, { title, year, poster }, { new: true });
-    res.send(updatedMovie);
+  const updatedMovie = await movieModel.findByIdAndUpdate(req.params.id, { title, year, poster }, { new: true });
+  res.send(updatedMovie);
 });
 
 // start the server and listen on the specified port
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
